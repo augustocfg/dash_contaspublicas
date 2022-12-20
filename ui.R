@@ -4,31 +4,43 @@ ui <- dashboardPage(
     sidebarMenu(
       menuItem('Início',
                tabName = 'homepage'),
-      menuItem('Dashboard',
-               tabName = 'development')
+      menuItem('RREO',
+               tabName = 'rreo_part',
+               menuSubItem('Receita E Despesa', 
+                           tabName = 'rec_desp_rreo'))
       )
     ),
   dashboardBody(
     tabItems(
       tabItem(tabName = 'homepage'),
-      tabItem(tabName = 'development',
-              fluidRow(selectInput('year1',
+      tabItem(tabName = 'rec_desp_rreo',
+              fluidRow(pickerInput('year1',
                                    choices = anos,
-                                   label = 'Ano Inicial:'),
-                       selectInput('year2',
+                                   label = 'Ano Inicial:',
+                                   options = pickerOptions(style = list(color = 'white'))),
+                       pickerInput('year2',
                                    choices = anos,
                                    label = 'Ano Final:', 
-                                   selected = last(anos)),
-                       selectInput('bimester', 
+                                   selected = last(anos),
+                                   options = pickerOptions(style = list(color = 'white'))),
+                       pickerInput('bimester', 
                                    choices = 1:6,
-                                   label = 'Semestre:'),
-                       selectInput('anex', 
-                                   choices = c(as.character(1:14)),
-                                   label = 'Anexo:'),
-                       selectInput('state', 
-                                   choices = c(1:24)),
-                                   label = 'Estado:')),
-              box(title ='Receitas e Despesas Correntes')
+                                   label = 'Semestre:',
+                                   selected = 6,
+                                   options = pickerOptions(style = list(color = 'white'))),
+                       pickerInput('state', 
+                                   choices = Estados$Código.da.UF,
+                                   choicesOpt = list(subtext =Estados$Estado),
+                                   multiple = T,
+                                   options = pickerOptions(liveSearch = T,
+                                                           style = list(color = 'white')),
+                                   label = 'Estado:'),
+                       actionButton('go_button',label = 'Iniciar')),
+              fluidRow(radioButtons('despesa',
+                                    label = 'Despesa:', inline = T,
+                                    choices = c('Liquidadas', 'Empenhadas'))),
+              box(title ='Receitas e Despesas Correntes',
+                  echarts4rOutput('receitas_graph'))
     )
     )
   )
